@@ -3,23 +3,21 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using NUnit.Framework;
+using System.Security.Cryptography;
+using NUnit.Framework.Internal;
 
 namespace ConsoleApp1
 {
-    class Program
+    internal static class Program
     {
-        static void Main()
+        internal static void Main()
         {
-            Assert.AreEqual("YES", Kata.Tickets(new int[] { 25, 25, 50, 50 }));
-            Assert.AreEqual("NO", Kata.Tickets(new int[] { 25, 100 }));
-            Assert.AreEqual("NO", Kata.Tickets(new int[] { 25, 25, 50, 50, 100 }));
-
+            Assert.AreEqual(3, Kata.Test("2 4 7 8 10"));
             Console.WriteLine("Well done!");
             Console.ReadKey();
         }
-        
     }
-    class Kata
+    internal static class Kata
     {
         public static int FindEvenIndex(int[] arr)
         {
@@ -160,35 +158,29 @@ namespace ConsoleApp1
                 {
                     bill25++;
                 }
-                else if (human / 50 == 1)
+                else if (human / 50 == 1 && bill25 -1 >= 0)
                 {
-                    if (bill25-- < 0)
+                    bill50++;
+                    bill25--;
+                }
+                else if (human / 100 == 1)
+                {
+                    if(bill50 - 1 >= 0 && bill25 - 1 >= 0)
+                    {
+                        bill50--;
+                        bill25--;
+                        bill100++;
+                    }
+                    else if(bill25 - 3 >= 0)
+                    {
+                        bill25 -= 3;
+                        bill100++;
+                    }
+                    else
                     {
                         result = "NO";
                         break;
                     }
-                    bill50++;
-                }
-                else if (human / 100 == 1)
-                {
-                    if(bill50-- < 0 || bill25-- < 0)
-                    {
-                        if(bill25 - 3 < 0)
-                        {
-                            result = "NO";
-                            break;
-                        }
-                        else
-                        {
-                            bill25 -= 3;
-                        }
-                    }
-                    else
-                    {
-                        bill50--;
-                        bill25--;
-                    }
-                    bill100++;
                 }
                 else
                 {
@@ -198,6 +190,78 @@ namespace ConsoleApp1
             }
 
             return result;
+        }
+        public static string RomanConvert(int n)
+        {
+            string result = "";
+            
+            string[] thousands = { "", "M", "MM", "MMM" };
+            string[] hundreds = { "", "C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM"};
+            string[] tens = { "", "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC" };
+            string[] ones = { "", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX" };
+
+            if(n >= 4000)
+            {
+                int intResult = n / 1000;
+                n %= 1000;
+                return RomanConvert(intResult) + RomanConvert(n);
+            }
+            else
+            {
+                int intResult = n / 1000;
+                n %= 1000;
+                result += thousands[intResult];
+                
+                intResult = n / 100;
+                n %= 100;
+                result += hundreds[intResult];
+
+                intResult = n / 10;
+                n %= 10;
+                result += tens[intResult] + ones[n];
+            }
+            return result;
+        }
+        public static double[] Tribonacci(double[] signature, int n)
+        {
+            if (n == 0)
+                return new double[] { 0 };
+            else
+                return Tribonacci(signature).Take(n).ToArray();
+        }
+        public static IEnumerable<double> Tribonacci(double[] signature)
+        {
+            foreach (var n in signature)
+                yield return n;
+
+            var buffer = new Queue<double>(signature);
+            while (true)
+            {
+                var next = buffer.Sum();
+                yield return next;
+                buffer.Dequeue();
+                buffer.Enqueue(next);
+            }
+        }
+        public static int Test(string numbers)
+        {
+            List<string> digits = numbers.Split(" ").ToList<string>();
+            int div = 0; int divValue = 0;
+            int mod = 0; int modValue = 0;
+            foreach (string item in digits) 
+            {
+                if (Int32.Parse(item) % 2 == 0)
+                {
+                    modValue = Int32.Parse(item);
+                    mod++;
+                }
+                else
+                {
+                    divValue = Int32.Parse(item);
+                    div++;
+                }
+            }
+            return mod > div ? (digits.IndexOf(divValue.ToString()) + 1) : (digits.IndexOf(modValue.ToString()));
         }
     }
 }
