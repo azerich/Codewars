@@ -12,7 +12,8 @@ namespace ConsoleApp1
     {
         internal static void Main()
         {
-            Assert.AreEqual(3, Kata.Test("2 4 7 8 10"));
+            Assert.AreEqual("", Kata.UniqueInOrder(""));
+            Assert.AreEqual("ABCDAB", Kata.UniqueInOrder("AAAABBBCCDAABBB"));
             Console.WriteLine("Well done!");
             Console.ReadKey();
         }
@@ -35,7 +36,10 @@ namespace ConsoleApp1
         public static int GetLeftSum(int[] arr, int currentIndex)
         {
             int result = 0;
-            if (currentIndex == 0) result = 0;
+            if (currentIndex == 0)
+            {
+                result = 0;
+            }
             else
             {
                 for (int i = 0; i < currentIndex; i++)
@@ -48,7 +52,10 @@ namespace ConsoleApp1
         public static int GetRightSum(int[] arr, int currentIndex)
         {
             int result = 0;
-            if (currentIndex == arr.Length) result = 0;
+            if (currentIndex == arr.Length)
+            {
+                result = 0;
+            }
             else
             {
                 for (int i = currentIndex + 1; i < arr.Length; i++)
@@ -86,7 +93,6 @@ namespace ConsoleApp1
             int sum = 0;
             for (int i = 0; i < value; i++)
             {
-
                 if(i % 3 == 0 && i % 5 == 0 && cnt == 0)
                 {
                     cnt++;
@@ -116,7 +122,7 @@ namespace ConsoleApp1
             //    str += char.ToUpper(words[i][0]) + words[i].Substring(1).ToLower();
             //}
 
-            string pattern = @"[-_]";
+            const string pattern = "[-_]";
             Regex regex = new Regex(pattern);
             MatchCollection matches = regex.Matches(str);
             if (matches.Count > 0)
@@ -194,7 +200,7 @@ namespace ConsoleApp1
         public static string RomanConvert(int n)
         {
             string result = "";
-            
+
             string[] thousands = { "", "M", "MM", "MMM" };
             string[] hundreds = { "", "C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM"};
             string[] tens = { "", "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC" };
@@ -211,7 +217,7 @@ namespace ConsoleApp1
                 int intResult = n / 1000;
                 n %= 1000;
                 result += thousands[intResult];
-                
+
                 intResult = n / 100;
                 n %= 100;
                 result += hundreds[intResult];
@@ -248,7 +254,7 @@ namespace ConsoleApp1
             List<string> digits = numbers.Split(" ").ToList<string>();
             int div = 0; int divValue = 0;
             int mod = 0; int modValue = 0;
-            foreach (string item in digits) 
+            foreach (string item in digits)
             {
                 if (Int32.Parse(item) % 2 == 0)
                 {
@@ -262,6 +268,32 @@ namespace ConsoleApp1
                 }
             }
             return mod > div ? (digits.IndexOf(divValue.ToString()) + 1) : (digits.IndexOf(modValue.ToString()));
+        }
+        public static string PigIt(string str)
+        {
+            return string.Join(" ", str.Split(" ").ToList().Select(huy => huy.Substring(1) + huy[0] + "ay"));
+        }
+        public static string GetReadableTime(int seconds)
+        {
+            return $"{seconds / 60 / 60:00}:{seconds / 60 % 60:00}:{seconds % 60 % 60:00}";
+        }
+        public static IEnumerable<T> UniqueInOrder<T>(IEnumerable<T> iterable)
+        {
+            List<T> newIterable = iterable.ToList<T>();
+            List<T> result = new List<T>();
+            for (int i = 0; i < newIterable.Count(); i++)
+            {
+                if (i - 1 < 0)
+                    result.Add(newIterable[i]);
+                else if (i + 1 < newIterable.Count() && !newIterable[i].Equals(newIterable[i - 1]))
+                    result.Add(newIterable[i]);
+                else if(i + 1 == newIterable.Count()) result.Add(newIterable[i]);
+            }
+            foreach (T item in result)
+            {
+                Console.Write(item.ToString());
+            }
+            return result;
         }
     }
 }
