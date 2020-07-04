@@ -13,8 +13,19 @@ namespace ConsoleApp1
     {
         internal static void Main()
         {
-            Assert.AreEqual("", Kata.UniqueInOrder(""));
-            Assert.AreEqual("ABCDAB", Kata.UniqueInOrder("AAAABBBCCDAABBB"));
+            Assert.AreEqual("now", Kata.formatDuration(0));
+            Assert.AreEqual("1 second", Kata.formatDuration(1));
+            Assert.AreEqual("1 minute and 2 seconds", Kata.formatDuration(62));
+            Assert.AreEqual("2 minutes", Kata.formatDuration(120));
+            Assert.AreEqual("1 hour, 1 minute and 2 seconds", Kata.formatDuration(3662));
+            Assert.AreEqual("182 days, 1 hour, 44 minutes and 40 seconds", Kata.formatDuration(15731080));
+            Assert.AreEqual("4 years, 68 days, 3 hours and 4 minutes", Kata.formatDuration(132030240));
+            Assert.AreEqual("6 years, 192 days, 13 hours, 3 minutes and 54 seconds", Kata.formatDuration(205851834));
+            Assert.AreEqual("8 years, 12 days, 13 hours, 41 minutes and 1 second", Kata.formatDuration(253374061));
+            Assert.AreEqual("7 years, 246 days, 15 hours, 32 minutes and 54 seconds", Kata.formatDuration(242062374));
+            Assert.AreEqual("3 years, 85 days, 1 hour, 9 minutes and 26 seconds", Kata.formatDuration(101956166));
+            Assert.AreEqual("1 year, 19 days, 18 hours, 19 minutes and 46 seconds", Kata.formatDuration(33243586));
+
             Console.WriteLine("Well done!");
             Console.ReadKey();
         }
@@ -289,6 +300,47 @@ namespace ConsoleApp1
                     yield return current;
                 }
             }
+        }
+        public static string formatDuration(int seconds)
+        {
+            List<string> result = new List<string>();
+            if (seconds == 0) return "now";
+            else
+            {
+                int years = seconds / 31536000;
+                int days = seconds % 31536000 / 86400;
+                int hours = seconds % 31536000 % 86400 / 3600;
+                int minutes = seconds % 31536000 % 86400 % 3600 / 60;
+                seconds = seconds % 31536000 % 86400 % 3600 % 60;
+                if (years > 0)
+                {
+                    if (years > 1) result.Add($"{years} years");
+                    else result.Add($"{years} year");
+                }
+                if (days > 0)
+                {
+                    if (days > 1) result.Add($"{days} days");
+                    else result.Add($"{days} day");
+                }
+                if (hours > 0)
+                {
+                    if (hours > 1) result.Add($"{hours} hours");
+                    else result.Add($"{hours} hour");
+                }
+                if (minutes > 0)
+                {
+                    if (minutes > 1) result.Add($"{minutes} minutes");
+                    else result.Add($"{minutes} minute");
+                }
+                if (seconds > 0)
+                {
+                    string and = string.Empty;
+                    if (seconds > 1) result.Add($"{seconds} seconds");
+                    else result.Add($"{seconds} second");
+                }
+            }
+
+            return string.Join(" ", result);
         }
     }
 }
