@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using NUnit.Framework;
 using System.Security.Cryptography;
 using NUnit.Framework.Internal;
+using System.Linq.Expressions;
 
 namespace ConsoleApp1
 {
@@ -279,21 +280,15 @@ namespace ConsoleApp1
         }
         public static IEnumerable<T> UniqueInOrder<T>(IEnumerable<T> iterable)
         {
-            List<T> newIterable = iterable.ToList<T>();
-            List<T> result = new List<T>();
-            for (int i = 0; i < newIterable.Count(); i++)
+            T previous = default;
+            foreach (T current in iterable)
             {
-                if (i - 1 < 0)
-                    result.Add(newIterable[i]);
-                else if (i + 1 < newIterable.Count() && !newIterable[i].Equals(newIterable[i - 1]))
-                    result.Add(newIterable[i]);
-                else if(i + 1 == newIterable.Count()) result.Add(newIterable[i]);
+                if (!current.Equals(previous))
+                {
+                    previous = current;
+                    yield return current;
+                }
             }
-            foreach (T item in result)
-            {
-                Console.Write(item.ToString());
-            }
-            return result;
         }
     }
 }
